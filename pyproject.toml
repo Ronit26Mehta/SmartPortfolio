@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "smartportfolio"
-version = "1.0.0"
+version = "2.1.1"
 description = "GNN + Prophet + DRL Portfolio Optimization TUI - A terminal-based intelligent asset allocation system"
 readme = "README.md"
 license = {text = "MIT"}
@@ -67,9 +67,9 @@ dev = [
 smartportfolio = "smartportfolio.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/smartportfolio/smartportfolio"
-Documentation = "https://github.com/smartportfolio/smartportfolio#readme"
-Repository = "https://github.com/smartportfolio/smartportfolio"
+Homepage = "https://github.com/Ronit26Mehta/SmartPortfolio"
+Documentation = "https://github.com/Ronit26Mehta/SmartPortfolio#readme"
+Repository = "https://github.com/Ronit26Mehta/SmartPortfolio"
 
 [tool.setuptools.packages.find]
 where = ["."]
