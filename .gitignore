@@ -102,7 +102,7 @@ outputs/
 *.json
 
 # Data files (keep samples)
-data/
+# data/
 !sample_*.csv
 *.parquet
 
