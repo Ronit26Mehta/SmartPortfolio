@@ -50,7 +50,8 @@ class Watchlist(Static):
     
     def compose(self) -> ComposeResult:
         yield Static("WATCHLIST", classes="sidebar-title")
-        yield DataTable(id="watchlist-table")
+        with ScrollableContainer(classes="scrollable-panel"):
+            yield DataTable(id="watchlist-table")
     
     def on_mount(self) -> None:
         """Initialize watchlist table."""
@@ -84,11 +85,12 @@ class AgentPanel(Static):
     
     def compose(self) -> ComposeResult:
         yield Static("AGENT STATUS", classes="sidebar-title")
-        yield Static("NEUTRAL", id="regime-display", classes="regime-indicator regime-neutral")
-        yield Static("Current Allocation:", classes="text-muted")
-        yield Static(id="allocation-display")
-        yield Static("Action Log:", classes="text-muted")
-        yield Log(id="action-log", max_lines=20)
+        with ScrollableContainer(classes="scrollable-panel"):
+            yield Static("NEUTRAL", id="regime-display", classes="regime-indicator regime-neutral")
+            yield Static("Current Allocation:", classes="text-muted")
+            yield Static(id="allocation-display")
+            yield Static("Action Log:", classes="text-muted")
+            yield Log(id="action-log", max_lines=50)
     
     def update_regime(self, regime: str) -> None:
         """Update regime display."""
@@ -125,8 +127,9 @@ class MainContent(Static):
     
     def compose(self) -> ComposeResult:
         yield Static("PORTFOLIO OVERVIEW", classes="sidebar-title")
-        yield Static(id="chart-display")
-        yield Static(id="metrics-display")
+        with ScrollableContainer(classes="scrollable-panel"):
+            yield Static(id="chart-display")
+            yield Static(id="metrics-display")
     
     def update_metrics(self, metrics: Dict[str, float]) -> None:
         """Update metrics display."""
@@ -281,12 +284,16 @@ class SmartPortfolioApp(App):
         from smartportfolio.data import TickerDataFetcher, FeatureEngineer, LocalStorage
         from smartportfolio.graph import DynamicGraphBuilder
         from smartportfolio.visualization import PortfolioVisualizer
+        from smartportfolio.rl.agent import RegimeDetector
         
         self.data_fetcher = TickerDataFetcher()
         self.feature_engineer = FeatureEngineer()
         self.graph_builder = DynamicGraphBuilder()
         self.storage = LocalStorage()
         self.visualizer = PortfolioVisualizer()
+        
+        # RL Agent components
+        self.regime_detector = RegimeDetector()
     
     def handle_command(self, command: str) -> None:
         """
@@ -437,23 +444,51 @@ class SmartPortfolioApp(App):
                 embeddings = gat.get_embeddings(current_features, adj)
 
             
-            # Step 5: Generate allocation (simplified without full training)
-            self.call_from_thread(self.log_action, "Generating allocation...")
+            # Step 5: Generate allocation
+            self.call_from_thread(self.log_action, "Analysing market regime...")
             
-            # Simple allocation using softmax of combined score
+            # Detect regime from portfolio returns
+            portfolio_returns = returns.mean(axis=1)
+            regime = self.regime_detector.detect(portfolio_returns.values)
+            
+            self.call_from_thread(self.log_action, f"Detected Regime: {regime.upper()}")
+            
+            # Update Agent Panel with regime
+            self.call_from_thread(
+                self.query_one("#agent-panel", AgentPanel).update_regime,
+                regime
+            )
+            
+            self.call_from_thread(self.log_action, "Optimizing allocation...")
+            
+            # Allocation based on embeddings and returns, adapted for regime
             recent_returns = returns.iloc[-20:].mean()
             embedding_scores = embeddings.mean(axis=1)[:len(recent_returns)]
             
-            # Combine returns and embedding insight
-            # Normalize both components
+            # Normalize components
             ret_normalized = (recent_returns.values - recent_returns.values.mean()) / (recent_returns.values.std() + 1e-10)
             emb_normalized = (embedding_scores - embedding_scores.mean()) / (embedding_scores.std() + 1e-10)
             
-            # Combined score
-            scores = ret_normalized + 0.3 * emb_normalized
+            # Adaptive scoring based on regime
+            if regime == "bull":
+                # Bull market: Focus on momentum and high returns
+                scores = ret_normalized * 1.2 + 0.3 * emb_normalized
+                temp = 1.0  # Sharp distribution
+            elif regime == "bear":
+                # Bear market: Defensive, focus on structural embeddings
+                scores = ret_normalized * 0.5 + 0.5 * emb_normalized
+                temp = 2.0  # Flatter distribution (more diversification)
+            elif regime == "volatile":
+                # Volatile: Balanced approach
+                scores = ret_normalized * 0.8 + 0.4 * emb_normalized
+                temp = 1.5
+            else:
+                # Neutral
+                scores = ret_normalized + 0.3 * emb_normalized
+                temp = 1.0
             
-            # Softmax to get positive weights that sum to 1
-            exp_scores = np.exp(scores - scores.max())  # subtract max for numerical stability
+            # Softmax with temperature
+            exp_scores = np.exp((scores - scores.max()) / temp)
             weights = exp_scores / exp_scores.sum()
             
             self.current_weights = dict(zip(tickers, weights.tolist()))
