@@ -244,6 +244,6 @@ For security concerns, please see our [Security Policy](SECURITY.md).
 
 <div align="center">
 
-**Made with ❤️ by Akash Upadhyay, Asma Shaikh & Dhruvi Shah**
+**Made with ❤️ by Anonymous**
 
 </div>
