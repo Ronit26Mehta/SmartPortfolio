@@ -4,15 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "smartportfolio"
-version = "2.1.1"
+version = "2.1.5"
 description = "GNN + Prophet + DRL Portfolio Optimization TUI - A terminal-based intelligent asset allocation system"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
 authors = [
-    {name = "Akash Upadhyay"},
-    {name = "Asma Shaikh"},
-    {name = "Dhruvi Shah"},
+    {name = "Anonymous"},
 ]
 keywords = [
     "portfolio-optimization",
