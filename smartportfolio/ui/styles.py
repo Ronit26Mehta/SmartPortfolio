@@ -151,6 +151,21 @@ Screen {
     padding: 1;
 }
 
+/* Scrollable Panels */
+.scrollable-panel {
+    height: 1fr;
+    max-height: 100%;
+    overflow-y: auto;
+    scrollbar-background: #121212;
+    scrollbar-color: #333333;
+    scrollbar-color-hover: #FF6A00;
+    scrollbar-color-active: #FF6A00;
+}
+
+.scrollable-panel:focus {
+    border: solid #FF6A00;
+}
+
 /* Watchlist */
 #watchlist {
     height: 100%;
