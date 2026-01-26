@@ -5,7 +5,7 @@ A terminal-based portfolio optimization system using Graph Neural Networks,
 Prophet forecasting, and Deep Reinforcement Learning for intelligent asset allocation.
 """
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 __author__ = "Akash Upadhyay, Asma Shaikh, Dhruvi Shah"
 
 from smartportfolio.config import Config
