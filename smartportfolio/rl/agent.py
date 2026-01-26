@@ -310,10 +310,24 @@ class HierarchicalAgent:
         weights = np.maximum(action, 0)
         weights = weights / (weights.sum() + 1e-10)
         
-        # Skip cash (first element)
+        # Skip cash (first element) and re-normalize
         allocation = {}
+        equity_weights = []
+        
         for i, ticker in enumerate(tickers):
-            allocation[ticker] = float(weights[i + 1]) if i + 1 < len(weights) else 0.0
+            w = float(weights[i + 1]) if i + 1 < len(weights) else 0.0
+            equity_weights.append(w)
+            allocation[ticker] = w
+            
+        # Re-normalize to sum to 1.0 (fully invested equity portion)
+        total_equity = sum(equity_weights)
+        if total_equity > 1e-6:
+            for ticker in allocation:
+                allocation[ticker] /= total_equity
+        else:
+            # Fallback if mostly cash: equal weights
+            for ticker in allocation:
+                allocation[ticker] = 1.0 / len(tickers)
         
         return allocation
     
