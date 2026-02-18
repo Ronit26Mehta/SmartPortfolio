@@ -189,7 +189,7 @@ class StatusBar(Static):
     
     def compose(self) -> ComposeResult:
         yield Horizontal(
-            Static("SmartPortfolio v0.1.0", id="version"),
+            Static("SmartPortfolio v2.2.0", id="version"),
             Static("|", classes="text-dim"),
             Static("Ready", id="status-text"),
             Static("|", classes="text-dim"),
@@ -392,13 +392,24 @@ class SmartPortfolioApp(App):
         self.call_from_thread(self.update_status, "Running optimization pipeline...")
         
         try:
-            # Step 1: Fetch data
+            # Step 1: Fetch data (batch-aware)
             self.call_from_thread(self.log_action, "Fetching market data...")
-            data_dict = self.data_fetcher.fetch_multiple(
+            
+            num_tickers = len(self.tickers)
+            if num_tickers > 15:
+                self.call_from_thread(
+                    self.log_action,
+                    f"Batch mode: {num_tickers} tickers in batches of 10"
+                )
+            
+            data_dict = self.data_fetcher.fetch_in_batches(
                 self.tickers,
                 progress_callback=lambda c, t, tk: self.call_from_thread(
                     self.update_status, f"Fetching {tk} ({c}/{t})"
-                )
+                ),
+                batch_callback=lambda bn, tb, bt: self.call_from_thread(
+                    self.log_action, f"Batch {bn}/{tb} ({len(bt)} tickers)"
+                ),
             )
             
             if not data_dict:
