@@ -1,11 +1,102 @@
 ticker,name
-AAPL,Apple Inc
-MSFT,Microsoft Corporation
-GOOGL,Alphabet Inc
-AMZN,Amazon.com Inc
-META,Meta Platforms Inc
-NVDA,NVIDIA Corporation
-TSLA,Tesla Inc
-JPM,JPMorgan Chase
-V,Visa Inc
-JNJ,Johnson and Johnson
+RELIANCE.NS,Reliance Industries
+TCS.NS,Tata Consultancy Services
+HDFCBANK.NS,HDFC Bank
+INFY.NS,Infosys
+ICICIBANK.NS,ICICI Bank
+HINDUNILVR.NS,Hindustan Unilever
+SBIN.NS,State Bank of India
+BHARTIARTL.NS,Bharti Airtel
+ITC.NS,ITC Ltd
+KOTAKBANK.NS,Kotak Mahindra Bank
+LT.NS,Larsen and Toubro
+HCLTECH.NS,HCL Technologies
+AXISBANK.NS,Axis Bank
+ASIANPAINT.NS,Asian Paints
+MARUTI.NS,Maruti Suzuki
+SUNPHARMA.NS,Sun Pharmaceutical
+TITAN.NS,Titan Company
+BAJFINANCE.NS,Bajaj Finance
+NESTLEIND.NS,Nestle India
+WIPRO.NS,Wipro
+ULTRACEMCO.NS,UltraTech Cement
+ONGC.NS,Oil and Natural Gas Corp
+NTPC.NS,NTPC Ltd
+POWERGRID.NS,Power Grid Corp
+JSWSTEEL.NS,JSW Steel
+TATAMOTORS.NS,Tata Motors
+TATASTEEL.NS,Tata Steel
+ADANIENT.NS,Adani Enterprises
+ADANIPORTS.NS,Adani Ports
+TECHM.NS,Tech Mahindra
+HDFCLIFE.NS,HDFC Life Insurance
+SBILIFE.NS,SBI Life Insurance
+BAJAJFINSV.NS,Bajaj Finserv
+GRASIM.NS,Grasim Industries
+DIVISLAB.NS,Divis Laboratories
+DRREDDY.NS,Dr Reddys Laboratories
+CIPLA.NS,Cipla
+APOLLOHOSP.NS,Apollo Hospitals
+EICHERMOT.NS,Eicher Motors
+BRITANNIA.NS,Britannia Industries
+INDUSINDBK.NS,IndusInd Bank
+COALINDIA.NS,Coal India
+BPCL.NS,Bharat Petroleum
+HINDALCO.NS,Hindalco Industries
+TATACONSUM.NS,Tata Consumer Products
+HEROMOTOCO.NS,Hero MotoCorp
+PIDILITIND.NS,Pidilite Industries
+DABUR.NS,Dabur India
+HAVELLS.NS,Havells India
+GODREJCP.NS,Godrej Consumer Products
+AMBUJACEM.NS,Ambuja Cements
+ACC.NS,ACC Ltd
+SHREECEM.NS,Shree Cement
+BERGEPAINT.NS,Berger Paints
+TORNTPHARM.NS,Torrent Pharmaceuticals
+LUPIN.NS,Lupin Ltd
+AUROPHARMA.NS,Aurobindo Pharma
+BIOCON.NS,Biocon
+SIEMENS.NS,Siemens India
+ABB.NS,ABB India
+BOSCHLTD.NS,Bosch India
+IOC.NS,Indian Oil Corporation
+GAIL.NS,GAIL India
+PNB.NS,Punjab National Bank
+BANKBARODA.NS,Bank of Baroda
+CANBK.NS,Canara Bank
+FEDERALBNK.NS,Federal Bank
+IDFCFIRSTB.NS,IDFC First Bank
+BANDHANBNK.NS,Bandhan Bank
+VOLTAS.NS,Voltas
+TRENT.NS,Trent Ltd
+PAGEIND.NS,Page Industries
+MUTHOOTFIN.NS,Muthoot Finance
+BAJAJ-AUTO.NS,Bajaj Auto
+CHOLAFIN.NS,Cholamandalam Investment
+INDUSTOWER.NS,Indus Towers
+DLF.NS,DLF Ltd
+GODREJPROP.NS,Godrej Properties
+OBEROIRLTY.NS,Oberoi Realty
+PERSISTENT.NS,Persistent Systems
+COFORGE.NS,Coforge
+LTIM.NS,LTIMindtree
+MPHASIS.NS,Mphasis
+SBICARD.NS,SBI Cards
+ICICIPRULI.NS,ICICI Prudential Life
+NAUKRI.NS,Info Edge Naukri
+POLYCAB.NS,Polycab India
+PIIND.NS,PI Industries
+CONCOR.NS,Container Corporation of India
+IRCTC.NS,Indian Railway Catering and Tourism
+HAL.NS,Hindustan Aeronautics
+BEL.NS,Bharat Electronics
+VEDL.NS,Vedanta Ltd
+TATAPOWER.NS,Tata Power
+ADANIGREEN.NS,Adani Green Energy
+JUBLFOOD.NS,Jubilant FoodWorks
+ZOMATO.NS,Zomato
+PAYTM.NS,One97 Communications Paytm
+DELHIVERY.NS,Delhivery
+MAXHEALTH.NS,Max Healthcare Institute
+DIXON.NS,Dixon Technologies
