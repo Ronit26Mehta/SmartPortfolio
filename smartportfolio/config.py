@@ -75,6 +75,11 @@ class DataConfig:
     default_interval: str = "1d"
     chunk_size: int = 10  # Process tickers in chunks for memory
     
+    # Batch Processing
+    batch_threshold: int = 15   # Trigger batch mode when ticker count exceeds this
+    batch_size: int = 10        # Number of tickers per batch
+    batch_delay: float = 2.0    # Seconds to wait between batches (rate limit)
+    
     # Feature Engineering
     rsi_period: int = 14
     macd_fast: int = 12
