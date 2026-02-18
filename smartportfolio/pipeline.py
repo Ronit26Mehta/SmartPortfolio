@@ -133,7 +133,13 @@ def run_headless_pipeline(ticker_file: str) -> Dict[str, float]:
         if c % 5 == 0:
             logger.info(f"Fetching {c}/{t}: {tk}")
     
-    data_dict = fetcher.fetch_multiple(tickers, progress_callback=progress)
+    data_dict = fetcher.fetch_in_batches(
+        tickers,
+        progress_callback=progress,
+        batch_callback=lambda bn, tb, bt: logger.info(
+            f"Starting batch {bn}/{tb} ({len(bt)} tickers)"
+        ),
+    )
     
     if not data_dict:
         raise ValueError("No data fetched")
@@ -214,7 +220,7 @@ def run_full_pipeline(
     
     # Load and fetch
     tickers = fetcher.load_tickers_from_file(ticker_file)
-    data_dict = fetcher.fetch_multiple(tickers)
+    data_dict = fetcher.fetch_in_batches(tickers)
     
     if not data_dict:
         raise ValueError("No data fetched")
