@@ -192,6 +192,98 @@ class TickerDataFetcher:
         logger.info(f"Fetched data for {len(results)}/{total} tickers")
         return results
     
+    def fetch_in_batches(
+        self,
+        tickers: List[str],
+        use_cache: bool = True,
+        progress_callback: callable = None,
+        batch_callback: callable = None,
+    ) -> Dict[str, pd.DataFrame]:
+        """
+        Fetch data for tickers using intelligent batching.
+        
+        When the number of tickers exceeds the batch threshold (default 15),
+        tickers are split into incremental batches (default size 10) to avoid
+        overwhelming the API and to manage memory on constrained devices.
+        
+        Each batch is fetched sequentially with a short delay between batches.
+        Results are merged into a single dictionary at the end.
+        
+        If ticker count <= batch_threshold, falls back to normal fetch_multiple.
+        
+        Args:
+            tickers: List of ticker symbols
+            use_cache: Whether to use cached data
+            progress_callback: Callback function(current, total, ticker)
+            batch_callback: Callback function(batch_num, total_batches, batch_tickers)
+            
+        Returns:
+            Dictionary mapping ticker to DataFrame
+        """
+        import time
+        
+        batch_threshold = config.data.batch_threshold
+        batch_size = config.data.batch_size
+        batch_delay = config.data.batch_delay
+        
+        # If ticker count is within threshold, use normal fetch
+        if len(tickers) <= batch_threshold:
+            logger.info(f"Ticker count ({len(tickers)}) <= threshold ({batch_threshold}), using direct fetch")
+            return self.fetch_multiple(tickers, use_cache, progress_callback)
+        
+        # Split tickers into batches
+        batches = [
+            tickers[i:i + batch_size]
+            for i in range(0, len(tickers), batch_size)
+        ]
+        total_batches = len(batches)
+        
+        logger.info(
+            f"Batch mode: {len(tickers)} tickers -> {total_batches} batches of ~{batch_size}"
+        )
+        
+        all_results: Dict[str, pd.DataFrame] = {}
+        global_idx = 0
+        total = len(tickers)
+        
+        for batch_num, batch_tickers in enumerate(batches, 1):
+            logger.info(f"Processing batch {batch_num}/{total_batches}: {batch_tickers}")
+            
+            if batch_callback:
+                batch_callback(batch_num, total_batches, batch_tickers)
+            
+            # Fetch current batch
+            def _batch_progress(c, t, tk):
+                nonlocal global_idx
+                if progress_callback:
+                    progress_callback(global_idx + c, total, tk)
+            
+            batch_results = self.fetch_multiple(
+                batch_tickers, use_cache=use_cache, progress_callback=_batch_progress
+            )
+            
+            # Merge batch results into combined dict
+            all_results.update(batch_results)
+            global_idx += len(batch_tickers)
+            
+            logger.info(
+                f"Batch {batch_num}/{total_batches} done: "
+                f"{len(batch_results)}/{len(batch_tickers)} fetched, "
+                f"{len(all_results)} total so far"
+            )
+            
+            # Memory cleanup between batches
+            import gc
+            gc.collect()
+            
+            # Rate-limit delay between batches (skip after last batch)
+            if batch_num < total_batches and batch_delay > 0:
+                logger.debug(f"Waiting {batch_delay}s before next batch...")
+                time.sleep(batch_delay)
+        
+        logger.info(f"Batch fetching complete: {len(all_results)}/{total} tickers successful")
+        return all_results
+    
     def fetch_to_combined(
         self,
         tickers: List[str],
@@ -201,6 +293,8 @@ class TickerDataFetcher:
         """
         Fetch data for multiple tickers and combine into single DataFrame.
         
+        Uses batch processing for large ticker lists.
+        
         Args:
             tickers: List of ticker symbols
             use_cache: Whether to use cached data
@@ -209,7 +303,7 @@ class TickerDataFetcher:
         Returns:
             Combined DataFrame with all tickers
         """
-        data_dict = self.fetch_multiple(tickers, use_cache, progress_callback)
+        data_dict = self.fetch_in_batches(tickers, use_cache, progress_callback)
         
         if not data_dict:
             return pd.DataFrame()
@@ -242,7 +336,7 @@ class TickerDataFetcher:
         Returns:
             DataFrame with dates as index and tickers as columns
         """
-        data_dict = self.fetch_multiple(tickers, use_cache)
+        data_dict = self.fetch_in_batches(tickers, use_cache)
         
         if not data_dict:
             return pd.DataFrame()
