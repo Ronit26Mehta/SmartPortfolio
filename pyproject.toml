@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "smartportfolio"
-version = "2.1.5"
+version = "2.2.0"
 description = "GNN + Prophet + DRL Portfolio Optimization TUI - A terminal-based intelligent asset allocation system"
 readme = "README.md"
 license = {text = "MIT"}
